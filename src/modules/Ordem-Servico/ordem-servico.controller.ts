@@ -18,9 +18,9 @@ export class OrdemServicoController {
 
 
   @Put('atualizar-status')
-  async atualizarStatus(@Body() id: number ,status: StatusOrdemServico ): Promise<{message?: string; ordem?:OrdemServico[] }> {
-    console.log(id, status, 'qqqqq')
-    return this.ordemService.atualizarStatus(id, status );
+  async atualizarStatus(@Body() body: { id: number; status: StatusOrdemServico }): Promise<{ message?: string; todosServicos?: OrdemServico[] }> {
+    const { id, status } = body;
+    return this.ordemService.atualizarStatus(id, status);
   }
 
 }

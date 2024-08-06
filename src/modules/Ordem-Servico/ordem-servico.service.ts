@@ -64,16 +64,15 @@ export class OrdemService {
     return { todosServicos: servicos}
   }
 
-  async atualizarStatus(id: number, status: StatusOrdemServico): Promise<{message?: string; servico?: OrdemServico[]}> {
+  async atualizarStatus(id: number, status: StatusOrdemServico): Promise<{ message?: string; todosServicos?: OrdemServico[] }> {
     try {
-      const parseDto = UpdateStatusSchema.parse({ id: id, status: status });
-
+      const parseDto = UpdateStatusSchema.parse({ id, status });
       const update = await this.prisma.ordemServico.update({
         where: { id: parseDto.id },
-        data: { status: parseDto.status }
+        data: { status: parseDto.status },
       });
 
-      return { message: "Status atualizado com sucesso.", servico: [update] };
+      return { message: "Status atualizado com sucesso.", todosServicos: [update] };
     } catch (error) {
       if (error instanceof z.ZodError) {
         throw new BadRequestException(error.errors);
