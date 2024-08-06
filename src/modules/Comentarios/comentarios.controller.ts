@@ -8,10 +8,10 @@ export class ComentariosController {
   constructor(private readonly comentarioService: ComentariosService) {}
 
   @Post()
-  async criarComentario(@Body() createComentarioDto: any): Promise<Comentario> {
+  async criarComentario(@Body() createComentarioDto: Comentario): Promise<Comentario> {
     return this.comentarioService.criarComentario(createComentarioDto);
   }
 
-
+  
 
 }

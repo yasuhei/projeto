@@ -1,10 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../../lib/prisma';
 import {  OrdemServico, StatusOrdemServico } from '@prisma/client';
-
 import { z } from "zod";
-const StatusOrdemServicoEnum = z.enum([StatusOrdemServico.ABERTA, StatusOrdemServico.FINALIZADA, StatusOrdemServico.CANCELADA]);
 
+
+
+const StatusOrdemServicoEnum = z.enum([StatusOrdemServico.ABERTA, StatusOrdemServico.FINALIZADA, StatusOrdemServico.CANCELADA]);
+const UpdateStatusSchema = z.object({
+  id: z.number(),
+  status: z.nativeEnum(StatusOrdemServico),
+});
+
+export type UpdateStatusDto = z.infer<typeof UpdateStatusSchema>;
 
 const CreateOrdemSchema = z.object({
   id: z.number(),
@@ -21,7 +28,7 @@ export type CreateOrdemDto = z.infer<typeof CreateOrdemSchema>;
 export class OrdemService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async criarServico(createOrdemServicoDto: any): Promise<OrdemServico> {
+  async criarServico(createOrdemServicoDto: OrdemServico): Promise<OrdemServico> {
 
     try{
       const parseDto = CreateOrdemSchema.parse(createOrdemServicoDto)
@@ -57,4 +64,22 @@ export class OrdemService {
     return { todosServicos: servicos}
   }
 
+  async atualizarStatus(id: number, status: StatusOrdemServico): Promise<{message?: string; servico?: OrdemServico[]}> {
+    try {
+      const parseDto = UpdateStatusSchema.parse({ id: id, status: status });
+
+      const update = await this.prisma.ordemServico.update({
+        where: { id: parseDto.id },
+        data: { status: parseDto.status }
+      });
+
+      return { message: "Status atualizado com sucesso.", servico: [update] };
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        throw new BadRequestException(error.errors);
+      } else {
+        throw new Error('Erro ao atualizar o status');
+      }
+    }
+  }
 }

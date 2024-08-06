@@ -5,21 +5,23 @@ import { Client } from '@prisma/client';
 @Controller('clientes')
 export class ClienteController {
   constructor(private readonly clienteService: ClienteService) {}
-  @Post('criar')
-  async criarUsuario(@Body() createClientDto: any): Promise<Client> {
-    return this.clienteService.criarUsuario(createClientDto);
-  }
 
   @Get()
   async buscarTodosClientes(): Promise<{ message?: string; clients?: Client[] }> {
     return this.clienteService.buscarTodosClientes();
   }
 
-
   @Get('/:id')
   async buscarUmUnicoCliente(@Param('id') id: string): Promise<Client> {
     return this.clienteService.buscarUmUnicoCliente(id);
   }
+
+  @Post('criar')
+  async criarUsuario(@Body() createClientDto: Client): Promise<Client> {
+    return this.clienteService.criarUsuario(createClientDto);
+  }
+
+
 
 
   

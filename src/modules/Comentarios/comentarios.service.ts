@@ -6,7 +6,7 @@ import { z } from "zod";
 const CreateComentarioDto = z.object({
   id: z.number().min(1, 'Id é obrigatório'),
   descricao: z.string().min(4, "É obrigatório a descrição"),
-  dataEnvio: z.string(),
+  dataEnvio: z.coerce.date(),
   idOrdemServico: z.number().min(1, "O Id deve ser do tipo número"),
 });
 
@@ -38,10 +38,7 @@ export class ComentariosService {
       }
     }
 
-
-
   }
-
 
 
 }
