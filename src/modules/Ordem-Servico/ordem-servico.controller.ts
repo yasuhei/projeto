@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { OrdemService } from './ordem-servico.service';
 import { OrdemServico, StatusOrdemServico } from '@prisma/client';
 
-@Controller('ordemServicos/')
+@Controller('ordemServicos')
 export class OrdemServicoController {
   constructor(private readonly ordemService: OrdemService) {}
 
@@ -21,6 +21,13 @@ export class OrdemServicoController {
   async atualizarStatus(@Body() body: { id: number; status: StatusOrdemServico }): Promise<{ message?: string; todosServicos?: OrdemServico[] }> {
     const { id, status } = body;
     return this.ordemService.atualizarStatus(id, status);
+  }
+
+
+  @Delete(':id')
+  async deleteService(@Param('id') id: string): Promise<{message?: string; ordem?: OrdemServico}> {
+    const idNumber = parseInt(id); 
+    return this.ordemService.deleteService(idNumber);
   }
 
 }

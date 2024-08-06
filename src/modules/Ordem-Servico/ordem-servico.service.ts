@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../lib/prisma';
 import {  OrdemServico, StatusOrdemServico } from '@prisma/client';
 import { z } from "zod";
@@ -81,4 +81,26 @@ export class OrdemService {
       }
     }
   }
-}
+
+
+  async deleteService(id: number): Promise<{ message: string; ordemServico?: OrdemServico }> {
+    try {
+      const deletedService = await this.prisma.ordemServico.delete({
+        where: {
+          id: id,
+        },
+      });
+      
+      return {
+        message: `Serviço com ID ${id} excluído com sucesso.`,
+        ordemServico: deletedService,
+      };
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`Serviço com ID ${id} não encontrado ou já excluido.`);
+      } else {
+        throw new InternalServerErrorException('Erro interno ao tentar excluir o serviço.');
+      }
+    }
+  }
+  }
