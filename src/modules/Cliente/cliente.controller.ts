@@ -11,7 +11,7 @@ export class ClienteController {
   }
 
   @Get()
-  async buscarTodosClientes(): Promise<Client[]> {
+  async buscarTodosClientes(): Promise<{ message?: string; clients?: Client[] }> {
     return this.clienteService.buscarTodosClientes();
   }
 
