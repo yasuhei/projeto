@@ -4,3 +4,5 @@ docker exec -it mysql_db /bin /bash
  mysql -u root -p
 
 a senha para conectar é rootpassword
+
+Comando npm run start:dev para rodar o projeto
